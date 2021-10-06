@@ -10,6 +10,7 @@ import numpy as np
 from evoman.environment import Environment
 from demo_controller import player_controller
 from plot import plot_fitness
+import matplotlib.pyplot as plt
 from genomes import genomes
 
 # choose this for not using visuals and thus making experiments faster
@@ -19,7 +20,7 @@ if headless:
             
 pop_size = 100
 gen = 50
-n_hidden = 5
+n_hidden = 10 # TODO: DIT MOET 10 VAN DE OPDRACHT
 N_runs = 10
 enemies = [4, 5, 8]
 keep_old = 0.2 # TODO: GEBRUIKEN?
@@ -41,7 +42,7 @@ def fitness(population, i):
     for individual in population:
         fitness = env.play(pcont=individual)[0]
         pop_fitness.append(fitness)
-        print(f"\nFitness for all enemies = {fitness}")
+        print(f"\n--Fitness for all enemies = {fitness}--")
     
     fitness_gens.append(np.mean(pop_fitness))       # adding mean fitness to list
     np.save(f"{experiment_name}/fitness_gens_{i}", fitness_gens)   # saving to numpy file, opening in test.py
@@ -114,7 +115,7 @@ for i in range(N_runs):
         fitness_gens = []
         fitness_max = []
         sigma_mean = []
-    
+        
         # create initial population and add to environment
         #all_genomes = genomes(pop_size, n_vars)
         # pop = all_genomes.get_population()
@@ -123,8 +124,8 @@ for i in range(N_runs):
         # Add sigma parameter control
         # TODO: BETWEEN 0 and 3?
         pop = np.zeros((pop_size, n_vars + 1))
-        for i in range(pop_size):
-            pop[i] = np.append(sigmaless_pop[i], random.uniform(0, 3))
+        for j in range(pop_size):
+            pop[j] = np.append(sigmaless_pop[j], random.uniform(0, 3))
         # sigmas = np.zeros(pop_size)
         # for i in range(pop_size):
         #     sigmas[i] = random.uniform(0, 3)
@@ -167,7 +168,8 @@ for i in range(N_runs):
             # TODO: Moet dit eigenlijk?
             solutions = [sigmaless_pop, pop_fitness]
             env.update_solutions(solutions)
-        print(best)
+                      
+        # print(best)
         # Stackoverflow on how to save the winning file and open it: https://stackoverflow.com/questions/61365668/applying-saved-neat-python-genome-to-test-environment-after-training
         with open(f"{experiment_name}/winner_{i}.pkl", "wb") as f:
             pickle.dump(best, f)

@@ -19,7 +19,7 @@ if headless:
             
 pop_size = 100
 gen = 50
-n_hidden = 5
+n_hidden = 10 # TODO: DIT MOET 10 VAN DE OPDRACHT
 N_runs = 10
 enemies = [4, 5, 8]
 keep_old = 0.2 # TODO: GEBRUIKEN?
@@ -41,7 +41,7 @@ def fitness(population, i):
     for individual in population:
         fitness = env.play(pcont=individual)[0]
         pop_fitness.append(fitness)
-        print(f"Fitness for all enemies = {fitness}")
+        print(f"--Fitness for all enemies = {fitness}--")
     
     fitness_gens.append(np.mean(pop_fitness))       # adding mean fitness to list
     np.save(f"{experiment_name}/fitness_gens_{i}", fitness_gens)   # saving to numpy file, opening in test.py
