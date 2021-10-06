@@ -10,6 +10,7 @@ import numpy as np
 from evoman.environment import Environment
 from demo_controller import player_controller
 from plot import plot_fitness
+from genomes import genomes
 
 # choose this for not using visuals and thus making experiments faster
 headless = True
@@ -20,19 +21,20 @@ pop_size = 100
 gen = 50
 n_hidden = 5
 N_runs = 10
-enemy = 5
-keep_old = 0.2
-mutation = 0.1
+enemies = [4, 5, 8]
+keep_old = 0.2 # TODO: GEBRUIKEN?
+mutation = 0.2
 
-experiment_name = f"crossover_enemy{enemy}"
+experiment_name = f"crossover_sigma1_enemy{enemies}"
 if not os.path.exists(experiment_name):
     os.makedirs(experiment_name)
 
 env = Environment(experiment_name=experiment_name,
                   playermode="ai",
                   player_controller=player_controller(n_hidden),
-                  enemies=[enemy],
-                  randomini="yes")
+                  enemies=enemies,
+                  randomini="yes", 
+                  multiplemode="yes")
 
 def fitness(population, i):
     pop_fitness = []
@@ -99,50 +101,52 @@ def gaussian(value, sigma):
         return value
 
 # number of weights for multilayer with 10 hidden neurons
-n_vars = (env.get_num_sensors()+1)*n_hidden + (n_hidden+1)*5
+n_vars = (env.get_num_sensors()+1)*n_hidden + (n_hidden+1)*5 # TODO: ADD SIGMAS FOR EVERY VAR
 
-for r in range(N_runs):
+for i in range(N_runs):
+    if not os.path.exists(f"{experiment_name}/winner_{i}.pkl"):
+        fitness_gens = []
+        fitness_max = []
     
-    fitness_gens = []
-    fitness_max = []
-
-    # create initial population and add to environment
-    pop = np.random.uniform(-1, 1, (pop_size, n_vars))
-    pop_fitness = fitness(pop, r)
-    
-    best_each_gen = [np.max(pop_fitness)]
-    best = pop[np.argmax(pop_fitness)]
-    mean_each_gen = [np.mean(pop_fitness)]
-    std_each_gen = [np.std(pop_fitness)]
-    
-    print("\n------------------------------------------------------------------")
-    print(f"Generation 0. Mean {mean_each_gen[-1]}, best {best_each_gen[-1]}")
-    print("------------------------------------------------------------------")
-    
-    solutions = [pop, pop_fitness]
-    env.update_solutions(solutions)
-    
-    for i in range(gen):
-        pop = crossover(solutions)#, keep_old)
-        pop_fitness = fitness(pop, r)
+        # create initial population and add to environment
+        #all_genomes = genomes(pop_size, n_vars)
+        # pop = all_genomes.get_population()
+        pop = np.random.uniform(-1, 1, (pop_size, n_vars)) # TODO: ADD SIGMA BETWEEN ??1 and 3??
+        pop_fitness = fitness(pop, i)
         
-        new_best = np.max(pop_fitness)
-        # TODO: REEVALUATE THE OLD BEST ?
-        if new_best > best_each_gen[-1]:
-            best = pop[np.argmax(pop_fitness)]
-        best_each_gen.append(new_best)
+        best_each_gen = [np.max(pop_fitness)]
+        best = pop[np.argmax(pop_fitness)]
+        mean_each_gen = [np.mean(pop_fitness)]
+        std_each_gen = [np.std(pop_fitness)]
         
-        mean_each_gen.append(np.mean(pop_fitness))
-        std_each_gen.append(np.std(pop_fitness))
-         
         print("\n------------------------------------------------------------------")
-        print(f"Generation {i+1}. Mean {mean_each_gen[-1]}, best {best_each_gen[-1]}")
+        print(f"Generation 0. Mean {mean_each_gen[-1]}, best {best_each_gen[-1]}")
         print("------------------------------------------------------------------")
         
         solutions = [pop, pop_fitness]
         env.update_solutions(solutions)
-    print(best)
-    # Stackoverflow on how to save the winning file and open it: https://stackoverflow.com/questions/61365668/applying-saved-neat-python-genome-to-test-environment-after-training
-    with open(f"{experiment_name}/winner_{r}.pkl", "wb") as f:
-        pickle.dump(best, f)
-        f.close()
+        
+        for g in range(gen - 1):
+            pop = crossover(solutions)#, keep_old)
+            pop_fitness = fitness(pop, i)
+            
+            new_best = np.max(pop_fitness)
+            # TODO: REEVALUATE THE OLD BEST ?
+            if new_best > best_each_gen[-1]:
+                best = pop[np.argmax(pop_fitness)]
+            best_each_gen.append(new_best)
+            
+            mean_each_gen.append(np.mean(pop_fitness))
+            std_each_gen.append(np.std(pop_fitness))
+             
+            print("\n------------------------------------------------------------------")
+            print(f"Generation {g+1}. Mean {mean_each_gen[-1]}, best {best_each_gen[-1]}")
+            print("------------------------------------------------------------------")
+            
+            solutions = [pop, pop_fitness]
+            env.update_solutions(solutions)
+        print(best)
+        # Stackoverflow on how to save the winning file and open it: https://stackoverflow.com/questions/61365668/applying-saved-neat-python-genome-to-test-environment-after-training
+        with open(f"{experiment_name}/winner_{i}.pkl", "wb") as f:
+            pickle.dump(best, f)
+            f.close()
