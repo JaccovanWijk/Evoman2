@@ -34,7 +34,8 @@ env = Environment(experiment_name=experiment_name,
                   player_controller=player_controller(n_hidden),
                   enemies=enemies,
                   randomini="yes", 
-                  multiplemode="yes")
+                  multiplemode="yes",
+                  logs="off")
 
 def fitness(population, i):
     pop_fitness = []
@@ -150,7 +151,7 @@ for i in range(N_runs):
             
             solutions = [pop, pop_fitness]
             env.update_solutions(solutions)
-        print(best)
+        # print(best)
         # Stackoverflow on how to save the winning file and open it: https://stackoverflow.com/questions/61365668/applying-saved-neat-python-genome-to-test-environment-after-training
         with open(f"experiments/{experiment_name}/winner_{i}.pkl", "wb") as f:
             pickle.dump(best, f)
