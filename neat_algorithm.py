@@ -111,13 +111,13 @@ if __name__ == '__main__':
     N_runs = 10     
     generations = 50         
     enemies = [4,5,8]             
-    sigma_scaling = True        
+    sigma_scaling = False        
 
     # set the right directory path name
     if sigma_scaling:
-        experiment_name = f"neat_sigma_nhidden5_gen{generations}_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
+        experiment_name = f"neat_sigma_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
     else:
-        experiment_name = f"neat_nhidden5_gen{generations}_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
+        experiment_name = f"neat_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
     
     # create directory if it does not exist yet
     if not os.path.exists(f"experiments/{experiment_name}"):
