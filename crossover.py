@@ -106,6 +106,10 @@ n_vars = (env.get_num_sensors()+1)*n_hidden + (n_hidden+1)*5
 
 for i in range(N_runs):
     if not os.path.exists(f"experiments/{experiment_name}/winner_{i}.pkl"):
+        if os.path.exists(f"experiments/{experiment_name}/fitness_gens{i}.pkl"):
+            os.remove(f"experiments/{experiment_name}/fitness_gens{i}.pkl")
+            os.remove(f"experiments/{experiment_name}/fitness_max{i}.pkl")
+            
         fitness_gens = []
         fitness_max = []
     
