@@ -27,9 +27,9 @@ def fitness_player(genomes, config):
     
     # # save mean and max each generation
     fitness_gens.append(np.mean(f_g))     
-    np.save(f"{experiment_name}/fitness_gens_{i}", fitness_gens)
+    np.save(f"experiments/{experiment_name}/fitness_gens_{i}", fitness_gens)
     fitness_max.append(np.max(f_g))       
-    np.save(f"{experiment_name}/fitness_max_{i}", fitness_max)   
+    np.save(f"experiments/{experiment_name}/fitness_max_{i}", fitness_max)   
 
 def fitness_sigma(genomes, config):
     """
@@ -44,6 +44,7 @@ def fitness_sigma(genomes, config):
     unscaled = []
     f_g = []
     for genome_id, g in genomes:
+        print(f"run {i}")
         unscaled.append(env.play(pcont=g)[0])
 
     j = 0
@@ -59,9 +60,9 @@ def fitness_sigma(genomes, config):
     
     # # save mean and max each generation
     fitness_gens.append(np.mean(unscaled))       
-    np.save(f"{experiment_name}/fitness_gens_{i}", fitness_gens)  
+    np.save(f"experiments/{experiment_name}/fitness_gens_{i}", fitness_gens)  
     fitness_max.append(np.max(unscaled))      
-    np.save(f"{experiment_name}/fitness_max_{i}", fitness_max)   
+    np.save(f"experiments/{experiment_name}/fitness_max_{i}", fitness_max)   
 
 
 def run():
@@ -91,7 +92,7 @@ def run():
     print('\nBest genome:\n{!s}'.format(winner))
 
     # saving winner as pickle file (copied from https://stackoverflow.com/questions/61365668/applying-saved-neat-python-genome-to-test-environment-after-training)
-    with open(f"{experiment_name}/winner_{i}.pkl", "wb") as f:
+    with open(f"experiments/{experiment_name}/winner_{i}.pkl", "wb") as f:
         pickle.dump(winner, f)
         f.close()
 
@@ -117,8 +118,8 @@ if __name__ == '__main__':
         experiment_name = f"neat_nhidden5_gen{generations}_enemy{enemies}"
     
     # create directory if it does not exist yet
-    if not os.path.exists(experiment_name):
-        os.makedirs(experiment_name)
+    if not os.path.exists(f"experiments/{experiment_name}"):
+        os.makedirs(f"experiments/{experiment_name}")
     
     # find config file and create a neat config
     local_dir = os.path.dirname(__file__)
@@ -136,8 +137,13 @@ if __name__ == '__main__':
                       multiplemode="yes")
 
     for i in range(N_runs):
+        print("\n----------------------\nWelcome to run {i}\n----------------------\n")
         # continue after the last completed run
-        if not os.path.exists(f"{experiment_name}/winner_{i}.pkl"):
+        if not os.path.exists(f"experiments/{experiment_name}/winner_{i}.pkl"):
+            if os.path.exists(f"experiments/{experiment_name}/fitness_gens{i}.pkl"):
+                os.remove(f"experiments/{experiment_name}/fitness_gens{i}.pkl")
+                os.remove(f"experiments/{experiment_name}/fitness_max{i}.pkl")
+
             # global variables for saving mean and max each generation
             fitness_gens = []       
             fitness_max = []    
