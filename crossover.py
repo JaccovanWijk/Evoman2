@@ -124,7 +124,7 @@ for i in range(N_runs):
         std_each_gen = [np.std(pop_fitness)]
         
         print("\n------------------------------------------------------------------")
-        print(f"Generation 0. Mean {mean_each_gen[-1]}, best {best_each_gen[-1]}")
+        print(f"Run:{i}. Generation 0. Mean {mean_each_gen[-1]}, best {best_each_gen[-1]}")
         print("------------------------------------------------------------------")
         
         solutions = [pop, pop_fitness]
@@ -144,7 +144,7 @@ for i in range(N_runs):
             std_each_gen.append(np.std(pop_fitness))
              
             print("\n------------------------------------------------------------------")
-            print(f"Generation {g+1}. Mean {mean_each_gen[-1]}, best {best_each_gen[-1]}")
+            print(f"Run:{i}. Generation {g+1}. Mean {mean_each_gen[-1]}, best {best_each_gen[-1]}")
             print("------------------------------------------------------------------")
             
             solutions = [pop, pop_fitness]
