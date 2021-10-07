@@ -17,8 +17,8 @@ headless = True
 if headless:
     os.environ["SDL_VIDEODRIVER"] = "dummy"
             
-pop_size = 100
-gen = 50
+pop_size = 3
+gen = 2
 n_hidden = 10 # TODO: DIT MOET 10 VAN DE OPDRACHT
 N_runs = 10
 enemies = [4, 5, 8]
@@ -26,8 +26,8 @@ keep_old = 0.2 # TODO: GEBRUIKEN?
 mutation = 0.2 # TODO: DEZE AANPASSEN?
 
 experiment_name = f"crossover_sigma1_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
-if not os.path.exists(experiment_name):
-    os.makedirs(experiment_name)
+if not os.path.exists(f"experiments/{experiment_name}"):
+    os.makedirs(f"experiments/{experiment_name}")
 
 env = Environment(experiment_name=experiment_name,
                   playermode="ai",
