@@ -69,7 +69,7 @@ def crossover(solutions): #, old):
     else:
         pop_weights = [x/sum(pop_fitness) for x in pop_fitness]
         
-    new_population = np.zeros((pop_size - len(top_pop),len(pop[0])))
+    new_population = np.zeros((pop_size,len(pop[0])))
     
     # Make 100% new population with uniform crossover
     for c in range(pop_size - len(top_pop)): #new_children):        
@@ -90,8 +90,9 @@ def crossover(solutions): #, old):
                 child[j] = gaussian(child[j], sigma)
             
         new_population[c] = child
-        
-    new_population = np.append(new_population, top_pop)
+    
+    for c in [x + pop_size - len(top_pop) for x in range(len(top_pop))]:
+        new_population[c] = top_pop[c - pop_size + len(top_pop)]
 
     return new_population
 
