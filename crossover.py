@@ -59,6 +59,7 @@ def crossover(solutions): #, old):
     top_parents = int(len(population) * keep_old)
     top_index = sorted(range(len(pop_fitness)), key=lambda i: pop_fitness[i])[-top_parents:]
     top_pop = [population[x] for x in top_index]
+    top_pop = np.array([population[x] for x in top_index])
     top_fitness = [pop_fitness[x] for x in top_index]
     
     # get weights according to relative fitness
