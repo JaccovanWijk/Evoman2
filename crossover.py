@@ -21,7 +21,7 @@ pop_size = 100
 gen = 50
 n_hidden = 10 # TODO: DIT MOET 10 VAN DE OPDRACHT
 N_runs = 10
-enemies = [4, 5, 8]
+enemies = [2,6,5]
 keep_old = 0.1 # TODO: GEBRUIKEN?
 mutation = 0.2 # TODO: DEZE AANPASSEN?
 
@@ -56,11 +56,11 @@ def crossover(solutions): #, old):
     
     # Get top 10%
     # TODO: DO WE WANT TO USE THIS? Do we want to let only top parents breed or do we want to keep the top parents in the population
-    # top_parents = int(len(population) * keep_old)
-    # top_index = sorted(range(len(pop_fitness)), key=lambda i: pop_fitness[i])[-top_parents:]
-    # top_pop = [population[x] for x in top_index]
+    top_parents = int(len(population) * keep_old)
+    top_index = sorted(range(len(pop_fitness)), key=lambda i: pop_fitness[i])[-top_parents:]
+    top_pop = [population[x] for x in top_index]
     # top_pop = np.array([population[x] for x in top_index])
-    # top_fitness = [pop_fitness[x] for x in top_index]
+    top_fitness = [pop_fitness[x] for x in top_index]
     
     # get weights according to relative fitness
     if (min(pop_fitness) < 0):
@@ -69,10 +69,10 @@ def crossover(solutions): #, old):
     else:
         pop_weights = [x/sum(pop_fitness) for x in pop_fitness]
         
-    new_population = np.zeros((pop_size,len(pop[0])))
+    new_population = np.zeros((pop_size - len(top_pop),len(pop[0])))
     
     # Make 100% new population with uniform crossover
-    for c in range(pop_size): #new_children):        
+    for c in range(pop_size - len(top_pop)): #new_children):        
         # Choose random parents with weights in mind
         # TODO: COULD ALSO CHOOSE TO TAKE MEAN OF TWO PARENTS, OR RANDOM VALUE p BETWEEN 0,1 AND GET p FROM ONE PARENT AND (1 - p) FROM THE OTHER
         parents = random.choices(population, weights=pop_weights, k=2)
@@ -90,6 +90,8 @@ def crossover(solutions): #, old):
                 child[j] = gaussian(child[j], sigma)
             
         new_population[c] = child
+        
+    new_population = np.append(new_population, top_pop)
 
     return new_population
 
