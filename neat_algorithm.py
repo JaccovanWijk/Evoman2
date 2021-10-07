@@ -112,7 +112,7 @@ if __name__ == '__main__':
     # set parameters
     N_runs = 10     
     generations = 50         
-    enemies = [4,5,8]             
+    enemies = [2,6,5]
     sigma_scaling = False        
 
     # set the right directory path name
