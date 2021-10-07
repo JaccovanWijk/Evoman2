@@ -108,8 +108,8 @@ if headless:
 if __name__ == '__main__':
     time0 = time()
     # set parameters
-    N_runs = 2     
-    generations = 2         
+    N_runs = 10     
+    generations = 50         
     enemies = [4,5,8]             
     sigma_scaling = True        
 
