@@ -22,9 +22,11 @@ def fitness_player(genomes, config):
     # get fitness each genome
     f_g = []
     for genome_id, g in genomes:
-        g.fitness = env.play(pcont=g)[0]
+        fi, player_life, enemy_life, playtime = env.play(pcont=g)
+        g.fitness = fi
         f_g.append(g.fitness)
-    
+        print(f"\nrun {i}, fitness: {np.round(fi, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
+
     # # save mean and max each generation
     fitness_gens.append(np.mean(f_g))     
     np.save(f"experiments/{experiment_name}/fitness_gens_{i}", fitness_gens)
@@ -44,10 +46,10 @@ def fitness_sigma(genomes, config):
     unscaled = []
     f_g = []
     for genome_id, g in genomes:
-        fitness, player_life, enemy_life, playtime = env.play(pcont=g)
-        unscaled.append(fitness)
+        fi, player_life, enemy_life, playtime = env.play(pcont=g)
+        unscaled.append(fi)
         # unscaled.append(env.play(pcont=g)[0])
-        print(f"\nrun {i}, fitness: {np.round(fitness, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
+        print(f"\nrun {i}, fitness: {np.round(fi, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
 
     j = 0
     for genome_id, g in genomes:
