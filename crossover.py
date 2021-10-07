@@ -25,7 +25,7 @@ enemies = [4, 5, 8]
 keep_old = 0.2 # TODO: GEBRUIKEN?
 mutation = 0.2 # TODO: DEZE AANPASSEN?
 
-experiment_name = f"crossover_sigma1_enemy{enemies}"
+experiment_name = f"crossover_sigma1_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
 if not os.path.exists(experiment_name):
     os.makedirs(experiment_name)
 
