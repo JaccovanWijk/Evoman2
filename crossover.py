@@ -25,7 +25,7 @@ enemies = [4, 5, 8]
 keep_old = 0.2 # TODO: GEBRUIKEN?
 mutation = 0.2 # TODO: DEZE AANPASSEN?
 
-experiment_name = f"crossover_sigma1_enemy{enemies}"
+experiment_name = f"crossover_sigma1_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
 if not os.path.exists(experiment_name):
     os.makedirs(experiment_name)
 
@@ -44,9 +44,9 @@ def fitness(population, i):
         print(f"--Fitness for all enemies = {fitness}--")
     
     fitness_gens.append(np.mean(pop_fitness))       # adding mean fitness to list
-    np.save(f"{experiment_name}/fitness_gens_{i}", fitness_gens)   # saving to numpy file, opening in test.py
+    np.save(f"experiments/{experiment_name}/fitness_gens_{i}", fitness_gens)   # saving to numpy file, opening in test.py
     fitness_max.append(np.max(pop_fitness))         # adding max fitness to list
-    np.save(f"{experiment_name}/fitness_max_{i}", fitness_max)     # saving to numpy file, opening in test.py
+    np.save(f"experiments/{experiment_name}/fitness_max_{i}", fitness_max)     # saving to numpy file, opening in test.py
      
     return pop_fitness
 
@@ -104,7 +104,7 @@ def gaussian(value, sigma):
 n_vars = (env.get_num_sensors()+1)*n_hidden + (n_hidden+1)*5
 
 for i in range(N_runs):
-    if not os.path.exists(f"{experiment_name}/winner_{i}.pkl"):
+    if not os.path.exists(f"experiments/{experiment_name}/winner_{i}.pkl"):
         fitness_gens = []
         fitness_max = []
     
@@ -147,6 +147,6 @@ for i in range(N_runs):
             env.update_solutions(solutions)
         print(best)
         # Stackoverflow on how to save the winning file and open it: https://stackoverflow.com/questions/61365668/applying-saved-neat-python-genome-to-test-environment-after-training
-        with open(f"{experiment_name}/winner_{i}.pkl", "wb") as f:
+        with open(f"experiments/{experiment_name}/winner_{i}.pkl", "wb") as f:
             pickle.dump(best, f)
             f.close()
