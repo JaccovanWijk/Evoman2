@@ -145,9 +145,10 @@ if __name__ == '__main__':
         print(f"\n----------------------\nWelcome to run {i}\n----------------------\n")
         # continue after the last completed run
         if not os.path.exists(f"experiments/{experiment_name}/winner_{i}.pkl"):
-            if os.path.exists(f"experiments/{experiment_name}/fitness_gens{i}.pkl"):
-                os.remove(f"experiments/{experiment_name}/fitness_gens{i}.pkl")
-                os.remove(f"experiments/{experiment_name}/fitness_max{i}.pkl")
+            if os.path.exists(f"experiments/{experiment_name}/fitness_gens_{i}.npy"):
+                print("fitness.npys exists, but no winner, deleting npys")
+                os.remove(f"experiments/{experiment_name}/fitness_gens_{i}.npy")
+                os.remove(f"experiments/{experiment_name}/fitness_max_{i}.npy")
 
             # global variables for saving mean and max each generation
             fitness_gens = []       
