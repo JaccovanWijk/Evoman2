@@ -18,14 +18,14 @@ def plot_fitness(general_names, N_runs, gens=20):
     # local_dir = os.path.dirname(__file__)
     
     # saving the enemy list and experiment names for specified general name
-    directories = [name for name in os.listdir(".") if os.path.isdir(name)]
+    directories = [name for name in os.listdir("experiments/") if os.path.isdir(f"experiments/{name}")]
     enemies = []
     experiment_names = []
 
     for dir in directories:
         for general_name in general_names:
             if re.match(general_name, dir):
-                enemies.append(int(re.findall(r"enemy\d{1,2}", dir)[0][5:]))
+                enemies.append(int(re.findall(r"enemy\d{3}", f"experiments/{dir}")[0][5:]))
                 experiment_names.append(dir)
 
     # one big array to save the loaded fitness numpy files, shape: (exp.names, runs, mean/max, generations)
@@ -33,19 +33,19 @@ def plot_fitness(general_names, N_runs, gens=20):
 
     # loading the numpy files and saving in right indices    
     for exp_id, experiment_name in enumerate(experiment_names):       
-        # plt.figure()
-        # plt.title(f"{experiment_name}")
+        plt.figure()
+        plt.title(f"{experiment_name}")
         for i in range(N_runs):
-            f_mean = np.load(f"{experiment_name}/fitness_gens_{i}.npy")
-            f_max = np.load(f"{experiment_name}/fitness_max_{i}.npy")
+            f_mean = np.load(f"experiments/{experiment_name}/fitness_gens_{i}.npy")
+            f_max = np.load(f"experiments/{experiment_name}/fitness_max_{i}.npy")
             fitnesses[exp_id, i, :, :len(f_mean)] = np.array((f_mean, f_max))
-            # lines = []
-            # lines.append(plt.plot(f_mean, '-')[0])
-            # lines.append(plt.plot(f_max, '--')[0])
+            lines = []
+            lines.append(plt.plot(f_mean, '-')[0])
+            lines.append(plt.plot(f_max, '--')[0])
 
-    # plt.xlabel('generations')
-    # plt.ylabel('fitness')
-    # plt.legend(lines, ['mean', 'max'])
+    plt.xlabel('generations')
+    plt.ylabel('fitness')
+    plt.legend(lines, ['mean', 'max'])
     
     # create a figure for every enemy and plot the non sigma and sigma fitnesses
     for i, experiment_name in enumerate(experiment_names):
@@ -71,14 +71,14 @@ def plot_fitness(general_names, N_runs, gens=20):
         plt.ylabel("fitness")
         plt.legend(loc=4)
         # plt.ylim(-9, 80)
-        plt.savefig(f"meanfigs/neat_mean_enemy{experiment_name[-1]}", dpi=200)
+        plt.savefig(f"meanfigs/neat_mean_enemy{enemies[i]}", dpi=200)
         
     plt.show()
 
 
 if __name__ == '__main__':
     # experiment names specified
-    experiment_names = ['neat_sigma_nhidden5_gen50_enemy', 'neat_nhidden5_gen50_enemy']
+    experiment_names = ['neat_enemy']
     N_runs = 2
 
     plot_fitness(experiment_names, N_runs, gens=50)

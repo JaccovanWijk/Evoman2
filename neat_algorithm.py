@@ -22,9 +22,11 @@ def fitness_player(genomes, config):
     # get fitness each genome
     f_g = []
     for genome_id, g in genomes:
-        g.fitness = env.play(pcont=g)[0]
+        fi, player_life, enemy_life, playtime = env.play(pcont=g)
+        g.fitness = fi
         f_g.append(g.fitness)
-    
+        print(f"\nrun {i}, fitness: {np.round(fi, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
+
     # # save mean and max each generation
     fitness_gens.append(np.mean(f_g))     
     np.save(f"experiments/{experiment_name}/fitness_gens_{i}", fitness_gens)
@@ -44,10 +46,10 @@ def fitness_sigma(genomes, config):
     unscaled = []
     f_g = []
     for genome_id, g in genomes:
-        fitness, player_life, enemy_life, playtime = env.play(pcont=g)
-        unscaled.append(fitness)
+        fi, player_life, enemy_life, playtime = env.play(pcont=g)
+        unscaled.append(fi)
         # unscaled.append(env.play(pcont=g)[0])
-        print(f"\nrun {i}, fitness: {np.round(fitness, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
+        print(f"\nrun {i}, fitness: {np.round(fi, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
 
     j = 0
     for genome_id, g in genomes:
@@ -111,13 +113,13 @@ if __name__ == '__main__':
     N_runs = 10     
     generations = 50         
     enemies = [4,5,8]             
-    sigma_scaling = True        
+    sigma_scaling = False        
 
     # set the right directory path name
     if sigma_scaling:
-        experiment_name = f"neat_sigma_nhidden5_gen{generations}_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
+        experiment_name = f"neat_sigma_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
     else:
-        experiment_name = f"neat_nhidden5_gen{generations}_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
+        experiment_name = f"neat_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
     
     # create directory if it does not exist yet
     if not os.path.exists(f"experiments/{experiment_name}"):
@@ -143,9 +145,10 @@ if __name__ == '__main__':
         print(f"\n----------------------\nWelcome to run {i}\n----------------------\n")
         # continue after the last completed run
         if not os.path.exists(f"experiments/{experiment_name}/winner_{i}.pkl"):
-            if os.path.exists(f"experiments/{experiment_name}/fitness_gens{i}.pkl"):
-                os.remove(f"experiments/{experiment_name}/fitness_gens{i}.pkl")
-                os.remove(f"experiments/{experiment_name}/fitness_max{i}.pkl")
+            if os.path.exists(f"experiments/{experiment_name}/fitness_gens_{i}.npy"):
+                print("fitness.npys exists, but no winner, deleting npys")
+                os.remove(f"experiments/{experiment_name}/fitness_gens_{i}.npy")
+                os.remove(f"experiments/{experiment_name}/fitness_max_{i}.npy")
 
             # global variables for saving mean and max each generation
             fitness_gens = []       
