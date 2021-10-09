@@ -21,11 +21,11 @@ pop_size = 100
 gen = 50
 n_hidden = 10 # TODO: DIT MOET 10 VAN DE OPDRACHT
 N_runs = 10
-enemies = [2,6,5]
-keep_old = 0.1 # TODO: GEBRUIKEN?
+enemies = [7,8]
+keep_old = 0.1 # TODO: Aanpassen??
 mutation = 0.2 # TODO: DEZE AANPASSEN?
 
-experiment_name = f"crossover_sigma1_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
+experiment_name = f"crossover_enemy{enemies[0]}{enemies[1]}"
 if not os.path.exists(f"experiments/{experiment_name}"):
     os.makedirs(f"experiments/{experiment_name}")
 
@@ -40,9 +40,9 @@ env = Environment(experiment_name=experiment_name,
 def fitness(population, i):
     pop_fitness = []
     for individual in population:
-        fitness = env.play(pcont=individual)[0]
+        fitness, p, e, t  = env.play(pcont=individual)
         pop_fitness.append(fitness)
-        print(f"--Fitness for all enemies = {fitness}--")
+        print(f"\n-- Fitness for all enemies = {fitness}, player = {p}, enemy = {e}, time = {t} --")
     
     fitness_gens.append(np.mean(pop_fitness))       # adding mean fitness to list
     np.save(f"experiments/{experiment_name}/fitness_gens_{i}", fitness_gens)   # saving to numpy file, opening in test.py
@@ -64,10 +64,11 @@ def crossover(solutions): #, old):
     
     # get weights according to relative fitness
     if (min(pop_fitness) < 0):
-        positive = [x + min(pop_fitness) for x in pop_fitness]
+        positive = [x + abs(min(pop_fitness)) for x in pop_fitness]
         pop_weights = [x/sum(positive) for x in positive]
     else:
         pop_weights = [x/sum(pop_fitness) for x in pop_fitness]
+        
         
     new_population = np.zeros((pop_size,len(pop[0])))
     
@@ -140,7 +141,7 @@ for i in range(N_runs):
             pop_fitness = fitness(pop, i)
             
             new_best = np.max(pop_fitness)
-            # TODO: REEVALUATE THE OLD BEST ?
+            # TODO: REEVALUATE THE OLD BEST ? MAYBE EVEN MULTIPLE TIMES?
             if new_best > best_each_gen[-1]:
                 best = pop[np.argmax(pop_fitness)]
             best_each_gen.append(new_best)
