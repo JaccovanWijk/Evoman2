@@ -25,7 +25,7 @@ enemies = [4,5,7,8]
 keep_old = 0.1 # TODO: Aanpassen??
 mutation = 0.2 # TODO: DEZE AANPASSEN?
 
-experiment_name = f"crossover_gain_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
+experiment_name = f"crossover_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
 if not os.path.exists(f"experiments/{experiment_name}"):
     os.makedirs(f"experiments/{experiment_name}")
 
@@ -55,7 +55,7 @@ def fitness(population, i):
     gain_max.append(np.max(pop_gain))         # adding max gain to list
     np.save(f"experiments/{experiment_name}/gain_max_{i}", gain_max)     # saving to numpy file, opening in test.py
     
-    return pop_gain
+    return pop_fitness
 
 def crossover(solutions): #, old):
     population, pop_fitness = solutions
