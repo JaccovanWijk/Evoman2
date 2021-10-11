@@ -69,7 +69,7 @@ directories = [name for name in os.listdir("experiments/") if os.path.isdir(f"ex
 enemies = []
 experiment_names = []
 for dir in directories:
-    if re.match("crossover_enemy234578", dir):
+    if re.match("crossover_enemy", dir):
         enemies.append(int(re.findall(r"enemy\d{2,3}", f"experiments/{dir}")[0][5:]))
         experiment_names.append(dir)
     # if re.match("neat_sigma_nhidden5_gen50_enemy",f"experiments/{dir}"):    # can be crossover
