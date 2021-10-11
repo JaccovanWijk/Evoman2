@@ -21,17 +21,25 @@ def fitness_player(genomes, config):
     
     # get fitness each genome
     f_g = []
+    g_g = []
     for genome_id, g in genomes:
         fi, player_life, enemy_life, playtime = env.play(pcont=g)
-        g.fitness = fi
-        f_g.append(g.fitness)
-        print(f"\nrun {i}, fitness: {np.round(fi, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
+        # g.fitness = fi
+        g.fitness = player_life - enemy_life
+        f_g.append(fi)
+        g_g.append(g.fitness)
+        # print(f"\nrun {i}, fitness: {np.round(fi, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
+        print(f"\nrun {i}, fitness: {np.round(fi, 5)}, gain: {np.round(g.fitness, 3)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
 
     # # save mean and max each generation
     fitness_gens.append(np.mean(f_g))     
     np.save(f"experiments/{experiment_name}/fitness_gens_{i}", fitness_gens)
     fitness_max.append(np.max(f_g))       
     np.save(f"experiments/{experiment_name}/fitness_max_{i}", fitness_max)   
+    gain_gens.append(np.mean(g_g))       # adding mean gain to list
+    np.save(f"experiments/{experiment_name}/gain_gens_{i}", gain_gens)   # saving to numpy file, opening in test.py
+    gain_max.append(np.max(g_g))         # adding max gain to list
+    np.save(f"experiments/{experiment_name}/gain_max_{i}", gain_max)     # saving to numpy file, opening in test.py
 
 def fitness_sigma(genomes, config):
     """
@@ -112,14 +120,14 @@ if __name__ == '__main__':
     # set parameters
     N_runs = 10     
     generations = 50         
-    enemies = [4,5,8]             
+    enemies = [4,5,7,8]             
     sigma_scaling = False        
 
     # set the right directory path name
     if sigma_scaling:
-        experiment_name = f"neat_sigma_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
+        experiment_name = f"neat_sigma_gain_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
     else:
-        experiment_name = f"neat_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
+        experiment_name = f"neat_gain_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
     
     # create directory if it does not exist yet
     if not os.path.exists(f"experiments/{experiment_name}"):
@@ -149,12 +157,17 @@ if __name__ == '__main__':
                 print("fitness.npys exists, but no winner, deleting npys")
                 os.remove(f"experiments/{experiment_name}/fitness_gens_{i}.npy")
                 os.remove(f"experiments/{experiment_name}/fitness_max_{i}.npy")
+                os.remove(f"experiments/{experiment_name}/gain_gens_{i}.npy")
+                os.remove(f"experiments/{experiment_name}/gain_max_{i}.npy")
 
             # global variables for saving mean and max each generation
             fitness_gens = []       
-            fitness_max = []    
+            fitness_max = []              
+            gain_gens = []       
+            gain_max = []    
             
             run()
+            
     time1 = time()
     print(f"#########\nTook {time1-time0} seconds.\n#########")
     # plot results

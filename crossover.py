@@ -21,11 +21,11 @@ pop_size = 100
 gen = 50
 n_hidden = 10 # TODO: DIT MOET 10 VAN DE OPDRACHT
 N_runs = 10
-enemies = [7,8,5]
+enemies = [4,5,7,8]
 keep_old = 0.1 # TODO: Aanpassen??
 mutation = 0.2 # TODO: DEZE AANPASSEN?
 
-experiment_name = f"crossover_enemy{enemies[0]}{enemies[1]}{enemies[2]}"
+experiment_name = f"crossover_gain_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
 if not os.path.exists(f"experiments/{experiment_name}"):
     os.makedirs(f"experiments/{experiment_name}")
 
@@ -39,17 +39,23 @@ env = Environment(experiment_name=experiment_name,
 
 def fitness(population, i):
     pop_fitness = []
+    pop_gain = []
     for individual in population:
         fitness, p, e, t  = env.play(pcont=individual)
         pop_fitness.append(fitness)
-        print(f"\n-- Fitness for all enemies = {fitness}, player = {p}, enemy = {e}, time = {t} --")
+        pop_gain.append(p-e)
+        print(f"\n-- Fitness for all enemies = {fitness}, gain = {p-e} player = {p}, enemy = {e}, time = {t} --")
     
     fitness_gens.append(np.mean(pop_fitness))       # adding mean fitness to list
     np.save(f"experiments/{experiment_name}/fitness_gens_{i}", fitness_gens)   # saving to numpy file, opening in test.py
     fitness_max.append(np.max(pop_fitness))         # adding max fitness to list
     np.save(f"experiments/{experiment_name}/fitness_max_{i}", fitness_max)     # saving to numpy file, opening in test.py
-     
-    return pop_fitness
+    gain_gens.append(np.mean(pop_gain))       # adding mean gain to list
+    np.save(f"experiments/{experiment_name}/gain_gens_{i}", gain_gens)   # saving to numpy file, opening in test.py
+    gain_max.append(np.max(pop_gain))         # adding max gain to list
+    np.save(f"experiments/{experiment_name}/gain_max_{i}", gain_max)     # saving to numpy file, opening in test.py
+    
+    return pop_gain
 
 def crossover(solutions): #, old):
     population, pop_fitness = solutions
@@ -117,6 +123,8 @@ for i in range(N_runs):
             
         fitness_gens = []
         fitness_max = []
+        gain_gens = []
+        gain_max = []
     
         # create initial population and add to environment
         #all_genomes = genomes(pop_size, n_vars)
