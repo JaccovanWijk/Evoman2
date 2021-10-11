@@ -25,9 +25,9 @@ def fitness_player(genomes, config):
     for genome_id, g in genomes:
         fi, player_life, enemy_life, playtime = env.play(pcont=g)
         # g.fitness = fi
-        g.fitness = player_life - enemy_life
+        g.fitness = fi
         f_g.append(fi)
-        g_g.append(g.fitness)
+        g_g.append(player_life - enemy_life)
         # print(f"\nrun {i}, fitness: {np.round(fi, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
         print(f"\nrun {i}, fitness: {np.round(fi, 5)}, gain: {np.round(g.fitness, 3)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
 
@@ -167,7 +167,7 @@ if __name__ == '__main__':
             gain_max = []    
             
             run()
-            
+
     time1 = time()
     print(f"#########\nTook {time1-time0} seconds.\n#########")
     # plot results
