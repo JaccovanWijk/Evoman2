@@ -125,9 +125,9 @@ if __name__ == '__main__':
 
     # set the right directory path name
     if sigma_scaling:
-        experiment_name = f"neat_sigma_gain_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
+        experiment_name = f"neat_sigma_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
     else:
-        experiment_name = f"neat_gain_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
+        experiment_name = f"neat_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
     
     # create directory if it does not exist yet
     if not os.path.exists(f"experiments/{experiment_name}"):
