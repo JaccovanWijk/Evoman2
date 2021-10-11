@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from pygame.constants import SRCALPHA
 sys.path.insert(0, 'evoman') 
 from evoman.environment import Environment
-from player_controllers import player_controller
+from demo_controller import player_controller
 import regex as re
 
 # TODO: SLDFJSDLFNSLF Weg gooien 
@@ -30,7 +30,7 @@ def replay_genome(config_path, run_i, experiment_name):
     for enemy in enemies:
         env = Environment(experiment_name=experiment_name,
                           playermode="ai",
-                          player_controller=player_controller(config),
+                          player_controller=player_controller(n_hidden),
                           enemies=[enemy],
                           randomini="yes", 
                           logs="off")
@@ -69,7 +69,7 @@ directories = [name for name in os.listdir("experiments/") if os.path.isdir(f"ex
 enemies = []
 experiment_names = []
 for dir in directories:
-    if re.match("crossover_enemy78", dir):
+    if re.match("crossover_enemy234578", dir):
         enemies.append(int(re.findall(r"enemy\d{2,3}", f"experiments/{dir}")[0][5:]))
         experiment_names.append(dir)
     # if re.match("neat_sigma_nhidden5_gen50_enemy",f"experiments/{dir}"):    # can be crossover
@@ -99,7 +99,7 @@ for i, experiment_name in enumerate(experiment_names):
 
     gains = [np.mean(five_runs(j, experiment_name)) for j in range(0, N_runs)]
     
-    print(np.argmax(gains))
+    print(f"The best winner this run was winner_{np.argmax(gains)}")
     
     # saving the data in an array for plt.boxplot() in shape (enemy, gains)
     boxplotdata.append(gains)
@@ -111,7 +111,7 @@ for i, experiment_name in enumerate(experiment_names):
 
 plt.figure()
 plt.boxplot(boxplotdata)
-plt.xticks(np.arange(0, len([enemies]))+1, [enemies])
+# plt.xticks(["78","265","458"])
 plt.ylabel("individual gain")
 plt.xlabel('Enemy')
 # plt.title('Individual Gain\nNormal vs Sigma Scaling')
