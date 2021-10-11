@@ -23,9 +23,11 @@ def fitness_player(genomes, config):
     f_g = []
     for genome_id, g in genomes:
         fi, player_life, enemy_life, playtime = env.play(pcont=g)
-        g.fitness = fi
-        f_g.append(g.fitness)
-        print(f"\nrun {i}, fitness: {np.round(fi, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
+        # g.fitness = fi
+        g.fitness = player_life - enemy_life
+        f_g.append(fi)
+        # print(f"\nrun {i}, fitness: {np.round(fi, 5)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
+        print(f"\nrun {i}, fitness: {np.round(fi, 5)}, gain: {np.round(g.fitness, 3)}, playerlife: {np.round(player_life, 3)}, enemylife: {np.round(enemy_life, 3)}, time: {np.round(playtime,1)} s\n")
 
     # # save mean and max each generation
     fitness_gens.append(np.mean(f_g))     
