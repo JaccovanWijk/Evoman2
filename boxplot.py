@@ -69,8 +69,8 @@ directories = [name for name in os.listdir("experiments/") if os.path.isdir(f"ex
 enemies_names = []
 experiment_names = []
 for dir in directories:
-    if re.match(r"crossover_enemy\d{4}$", dir):
-        enemies_names.append(int(re.findall(r"enemy\d{4}$", f"experiments/{dir}")[0][5:]))
+    if re.match(r"crossover_enemy\d{3,4}$", dir):
+        enemies_names.append(int(re.findall(r"enemy\d{3,4}$", f"experiments/{dir}")[0][5:]))
         experiment_names.append(dir)
     # if re.match("neat_sigma_nhidden5_gen50_enemy",f"experiments/{dir}"):    # can be crossover
     #     enemies.append(int(re.findall(r"enemy\d{3}", dir)[0][5:]))
@@ -119,9 +119,9 @@ for i, experiment_name in enumerate(experiment_names):
 
 plt.figure()
 plt.boxplot(boxplotdata)
-plt.xticks(enemies_names, len(enemies_names))
+plt.xticks(np.arange(1,len(enemies_names)+1), enemies_names)#[str(enemies) for enemies in enemies_names])
 plt.ylabel("individual gain")
 plt.xlabel('Enemy')
 # plt.title('Individual Gain\nNormal vs Sigma Scaling')
-plt.savefig(f"boxplotfigs/neat", dpi=400)
+plt.savefig(f"boxplotfigs/{enemies_names}", dpi=400)
 plt.show()
