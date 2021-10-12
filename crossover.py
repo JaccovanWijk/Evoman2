@@ -21,21 +21,37 @@ pop_size = 100
 gen = 50
 n_hidden = 10 # TODO: DIT MOET 10 VAN DE OPDRACHT
 N_runs = 10
-enemies = [4,5,7,8]
+enemies = [2,3,4,7,8]
 keep_old = 0.1 # TODO: Aanpassen??
 mutation = 0.2 # TODO: DEZE AANPASSEN?
+increase_enemies = False
 
-experiment_name = f"crossover_enemy{enemies[0]}{enemies[1]}{enemies[2]}{enemies[3]}"
+experiment_name = "crossover"
+if increase_enemies:
+    experiment_name += "_increase"
+experiment_name += "_enemy"
+for e in enemies:
+    experiment_name += f"{e}"
+    
 if not os.path.exists(f"experiments/{experiment_name}"):
     os.makedirs(f"experiments/{experiment_name}")
-
-env = Environment(experiment_name=experiment_name,
-                  playermode="ai",
-                  player_controller=player_controller(n_hidden),
-                  enemies=enemies,
-                  randomini="yes", 
-                  multiplemode="yes",
-                  logs="off")
+    
+if increase_enemies:
+    env = Environment(experiment_name=experiment_name,
+              playermode="ai",
+              player_controller=player_controller(n_hidden),
+              enemies=enemies[:-2],
+              randomini="yes", 
+              multiplemode="yes",
+              logs="off")
+else:
+    env = Environment(experiment_name=experiment_name,
+              playermode="ai",
+              player_controller=player_controller(n_hidden),
+              enemies=enemies,
+              randomini="yes", 
+              multiplemode="yes",
+              logs="off")
 
 def fitness(population, i):
     pop_fitness = []
@@ -120,7 +136,7 @@ for i in range(N_runs):
         if os.path.exists(f"experiments/{experiment_name}/fitness_gens{i}.pkl"):
             os.remove(f"experiments/{experiment_name}/fitness_gens{i}.pkl")
             os.remove(f"experiments/{experiment_name}/fitness_max{i}.pkl")
-            
+          
         fitness_gens = []
         fitness_max = []
         gain_gens = []
@@ -130,6 +146,15 @@ for i in range(N_runs):
         #all_genomes = genomes(pop_size, n_vars)
         # pop = all_genomes.get_population()
         pop = np.random.uniform(-1, 1, (pop_size, n_vars)) 
+        
+        # genome_path = f"experiments/twice_crossover_enemy2378/winner_6.pkl"
+        # # unpickle saved winner
+        # with open(genome_path, "rb") as f:
+        #     genome = pickle.load(f)
+            
+        # for extra in range(10):
+        #     pop[extra] = genome
+            
         pop_fitness = fitness(pop, i)
         
         best_each_gen = [np.max(pop_fitness)]
@@ -145,6 +170,12 @@ for i in range(N_runs):
         env.update_solutions(solutions)
         
         for g in range(gen - 1):
+            if increase_enemies:
+                if g == 15:
+                    env.update_parameter(enemies, enemies[:-1])
+                if g == 30:
+                    env.update_parameter(enemies, enemies)
+                    
             pop = crossover(solutions)#, keep_old)
             pop_fitness = fitness(pop, i)
             
