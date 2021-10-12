@@ -27,7 +27,7 @@ def replay_genome(config_path, run_i, experiment_name):
         genome = pickle.load(f)
         
     gain = 0
-    for enemy in enemies:
+    for enemy in [1,2,3,4,5,6,7,8]:
         env = Environment(experiment_name=experiment_name,
                           playermode="ai",
                           player_controller=player_controller(n_hidden),
@@ -66,25 +66,33 @@ config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.D
   
 # reading all directories and saving all starting with experiment names with specified variables
 directories = [name for name in os.listdir("experiments/") if os.path.isdir(f"experiments/{name}")]
-enemies = []
+enemies_names = []
 experiment_names = []
 for dir in directories:
-    if re.match("crossover_enemy", dir):
-        enemies.append(int(re.findall(r"enemy\d{2,3}", f"experiments/{dir}")[0][5:]))
+    if re.match(r"crossover_enemy\d{4}$", dir):
+        enemies_names.append(int(re.findall(r"enemy\d{4}$", f"experiments/{dir}")[0][5:]))
         experiment_names.append(dir)
     # if re.match("neat_sigma_nhidden5_gen50_enemy",f"experiments/{dir}"):    # can be crossover
     #     enemies.append(int(re.findall(r"enemy\d{3}", dir)[0][5:]))
     #     experiment_names.append(dir)
 
 # sorting enemies (copied from https://stackoverflow.com/questions/6618515/sorting-list-based-on-values-from-another-list)
-experiment_names = [x for _, x in sorted(zip(enemies, experiment_names))]
-enemies.sort()
-# print(str(enemies[0]))
-enemies = [int(enemy) for enemy in str(enemies[0])]
-enemies = [1,2,3,4,5,6,7,8]
+experiment_names = [x for _, x in sorted(zip(enemies_names, experiment_names))]
+enemies_names.sort()
 
+# print(str(enemies[0]))
+# enemies = [int(enemy) for enemy in [str(enemieslist) for enemieslist in enemies]]
+# enemies1 = []
+# for i in range(len(enemies)):
+#     enemies1.append([int(enemy) for enemy in str(enemies[i])])
+# enemies = [int(enemy) for enemy in str(enemies[0])]
+# enemies = [1,2,3,4,5,6,7,8]
+print(experiment_names)
+
+print(enemies_names)
 # saving all data for the boxplots
 boxplotdata = []
+
 
 # saving the mean gain from every five runs for every experiment name
 for i, experiment_name in enumerate(experiment_names):
@@ -111,7 +119,7 @@ for i, experiment_name in enumerate(experiment_names):
 
 plt.figure()
 plt.boxplot(boxplotdata)
-# plt.xticks(["78","265","458"])
+plt.xticks(enemies_names, len(enemies_names))
 plt.ylabel("individual gain")
 plt.xlabel('Enemy')
 # plt.title('Individual Gain\nNormal vs Sigma Scaling')
