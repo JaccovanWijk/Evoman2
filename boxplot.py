@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 from pygame.constants import SRCALPHA
 sys.path.insert(0, 'evoman') 
 from evoman.environment import Environment
-from demo_controller import player_controller
+from demo_controller import player_controller as cont_cross
+from player_controllers import player_controller as cont_neat
 import regex as re
 
 # TODO: SLDFJSDLFNSLF Weg gooien 
@@ -28,13 +29,22 @@ def replay_genome(config_path, run_i, experiment_name):
         
     gain = 0
     for enemy in [1,2,3,4,5,6,7,8]:
-        env = Environment(experiment_name=experiment_name,
-                          playermode="ai",
-                          player_controller=player_controller(n_hidden),
-                          enemies=[enemy],
-                          randomini="yes", 
-                          logs="off")
-        
+        if experiment_name[:4] == "neat":
+            env = Environment(experiment_name=experiment_name,
+                            playermode="ai",
+                            player_controller=cont_neat(config),
+                            enemies=[enemy],
+                            randomini="yes", 
+                            logs="off")
+            
+        else:
+            env = Environment(experiment_name=experiment_name,
+                            playermode="ai",
+                            player_controller=cont_cross(n_hidden),
+                            enemies=[enemy],
+                            randomini="yes", 
+                            logs="off")
+            
         # playing genome and getting gain
         player_life, enemy_life = env.play(pcont=genome)[1:3]
         
@@ -72,10 +82,9 @@ for dir in directories:
     if re.match(r"crossover_enemy\d{3,4}$", dir):
         enemies_names.append(int(re.findall(r"enemy\d{3,4}$", f"experiments/{dir}")[0][5:]))
         experiment_names.append(dir)
-    # if re.match("neat_sigma_nhidden5_gen50_enemy",f"experiments/{dir}"):    # can be crossover
-    #     enemies.append(int(re.findall(r"enemy\d{3}", dir)[0][5:]))
-    #     experiment_names.append(dir)
-
+    if re.match(r"neat_enemy\d{3,4}$", dir):
+        enemies_names.append(int(re.findall(r"enemy\d{3,4}$", f"experiments/{dir}")[0][5:]))
+        experiment_names.append(dir)
 # sorting enemies (copied from https://stackoverflow.com/questions/6618515/sorting-list-based-on-values-from-another-list)
 experiment_names = [x for _, x in sorted(zip(enemies_names, experiment_names))]
 enemies_names.sort()
@@ -113,9 +122,11 @@ for i, experiment_name in enumerate(experiment_names):
     boxplotdata.append(gains)
 
 # changing enemy names with sigma for xticks
-# for i, enemy in enumerate(enemies):
-#     if (i % 2) != 0:
-#         enemies[i] = f"{enemy} Sigma"
+for i, enemy in enumerate(enemies_names):
+    if experiment_names[i][:4] == "neat":
+        enemies_names[i] = f"{enemy} neat"
+    else:
+        enemies_names[i] = f"{enemy} cross"
 
 plt.figure()
 plt.boxplot(boxplotdata)
