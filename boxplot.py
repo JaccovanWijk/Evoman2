@@ -79,11 +79,11 @@ directories = [name for name in os.listdir("experiments/") if os.path.isdir(f"ex
 enemies_names = []
 experiment_names = []
 for dir in directories:
-    if re.match(r"crossover_enemy\d{3,4}$", dir):
-        enemies_names.append(int(re.findall(r"enemy\d{3,4}$", f"experiments/{dir}")[0][5:]))
+    if re.match(r"crossover_enemy\d{2,4}$", dir):
+        enemies_names.append(int(re.findall(r"enemy\d{2,4}$", f"experiments/{dir}")[0][5:]))
         experiment_names.append(dir)
-    if re.match(r"neat_enemy\d{3,4}$", dir):
-        enemies_names.append(int(re.findall(r"enemy\d{3,4}$", f"experiments/{dir}")[0][5:]))
+    if re.match(r"neat_enemy\d{2,4}$", dir):
+        enemies_names.append(int(re.findall(r"enemy\d{2,4}$", f"experiments/{dir}")[0][5:]))
         experiment_names.append(dir)
 # sorting enemies (copied from https://stackoverflow.com/questions/6618515/sorting-list-based-on-values-from-another-list)
 experiment_names = [x for _, x in sorted(zip(enemies_names, experiment_names))]
@@ -124,9 +124,9 @@ for i, experiment_name in enumerate(experiment_names):
 # changing enemy names with sigma for xticks
 for i, enemy in enumerate(enemies_names):
     if experiment_names[i][:4] == "neat":
-        enemies_names[i] = f"{enemy} neat"
+        enemies_names[i] = f"{enemy}n"
     else:
-        enemies_names[i] = f"{enemy} cross"
+        enemies_names[i] = f"{enemy}c"
 
 plt.figure()
 plt.boxplot(boxplotdata)
@@ -134,5 +134,8 @@ plt.xticks(np.arange(1,len(enemies_names)+1), enemies_names)#[str(enemies) for e
 plt.ylabel("individual gain")
 plt.xlabel('Enemy')
 # plt.title('Individual Gain\nNormal vs Sigma Scaling')
+figure = plt.gcf()
+
+figure.set_size_inches(16, 12)
 plt.savefig(f"boxplotfigs/{enemies_names}", dpi=400)
 plt.show()
