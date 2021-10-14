@@ -1,3 +1,4 @@
 
 *.pyc
 experiments/.DS_Store
+workspace.code-workspace
